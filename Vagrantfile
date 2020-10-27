@@ -67,4 +67,14 @@ Vagrant.configure("2") do |config|
   #   apt-get update
   #   apt-get install -y apache2
   # SHELL
+  config.vm.define "centos" do |centos1|
+    centos1.vm.box = "centos/7"
+    centos1.vm.hostname = "centos1"
+    centos1.vm.network "private_network", ip: "192.168.34.10"
+    end
+  config.vm.define "myubuntu" do |myubuntu|
+    myubuntu.vm.box = "ubuntu/xenial64"
+    myubuntu.vm.hostname = "myubuntu"
+    myubuntu.vm.network "private_network", ip: "192.168.34.20"
+   end
 end
