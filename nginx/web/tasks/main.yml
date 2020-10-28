@@ -1,0 +1,49 @@
+---
+# tasks file for nginx
+- name: install app on Debian distro
+  apt: name={{ item }} state=latest
+  with_items:
+   - vim
+   - nginx
+   - nano
+   - tcpdump
+   - wget
+   - curl
+        
+  notify: restart-nginx-service
+  register: depresulte
+  ignore_errors: yes
+  when: ansible_os_family == "Debian"
+
+- name: Add epel-release repo
+  yum: name=epel-release state=present
+  when: ansible_os_family == "RedHat"
+  
+  
+- name: install app on RedHat distro
+  yum: name={{ item }} state=latest
+  with_items:
+   - vim
+   - nginx
+   - nano
+   - tcpdump
+   - wget
+   - curl
+        
+  notify: restart-nginx-service
+  register: redresulte
+  notify: restart-nginx-service
+  ignore_errors: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Deploy Nginx Configuration file
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: restart-nginx-service
+
+- name: Upload the web files
+  copy:
+    src: usr/share/www/html/
+    dest: /usr/share/www/html/
+  notify: restart-nginx-service
